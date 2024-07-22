@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integer and Roman Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            text-align:center;
+        }
+        .container {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input, button {
+            width: 100%;
+            padding: 10px 0px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            font-size: 18px;
+            text-align: center;
+        }
+  
+  #integerInput, #romanInput{
+    width:320px;
+    margin-bottom:25px;
+    padding-left:10px;
+    padding-right:10px;
+  }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Integer & Roman Converter</h1>
+        <div class="form-group">
+            <label for="conversionType">Select Conversion Type:</label>
+            <select id="conversionType">
+                <option value="integerToRoman">Integer to Roman</option>
+                <option value="romanToInteger">Roman to Integer</option>
+            </select>
+        </div>
+        <div id="integerToRoman" class="conversion-section">
+            <div class="form-group">
+                <label for="integerInput">Integer:</label>
+                <input type="number" id="integerInput" placeholder="Enter integer" min="1" max="3999">
+                <button onclick="convertToRoman()">Convert to Roman</button>
+                <div id="romanResult" class="result"></div>
+            </div>
+        </div>
+        <div id="romanToInteger" class="conversion-section" style="display: none;">
+            <div class="form-group">
+                <label for="romanInput">Roman Numeral:</label>
+                <input type="text" id="romanInput" placeholder="Enter Roman numeral">
+                <button onclick="convertToInteger()">Convert to Integer</button>
+                <div id="integerResult" class="result"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('conversionType').addEventListener('change', function() {
+            const selectedValue = this.value;
+            document.getElementById('integerToRoman').style.display = selectedValue === 'integerToRoman' ? 'block' : 'none';
+            document.getElementById('romanToInteger').style.display = selectedValue === 'romanToInteger' ? 'block' : 'none';
+        });
+
+        function convertToRoman() {
+            const num = parseInt(document.getElementById('integerInput').value);
+            const roman = integerToRoman(num);
+            document.getElementById('romanResult').textContent = roman || 'Invalid input';
+        }
+
+        function convertToInteger() {
+            const roman = document.getElementById('romanInput').value.toUpperCase();
+            const num = romanToInteger(roman);
+            document.getElementById('integerResult').textContent = num || 'Invalid input';
+        }
+
+        function integerToRoman(num) {
+            if (isNaN(num) || num < 1 || num > 3999) return '';
+            const values = [
+                1000, 900, 500, 400,
+                100, 90, 50, 40,
+                10, 9, 5, 4,
+                1
+            ];
+            const symbols = [
+                'M', 'CM', 'D', 'CD',
+                'C', 'XC', 'L', 'XL',
+                'X', 'IX', 'V', 'IV',
+                'I'
+            ];
+            let roman = '';
+            for (let i = 0; i < values.length; i++) {
+                while (num >= values[i]) {
+                    roman += symbols[i];
+                    num -= values[i];
+                }
+            }
+            return roman;
+        }
+
+        function romanToInteger(roman) {
+            const romanNumerals = {
+                'I': 1,
+                'V': 5,
+                'X': 10,
+                'L': 50,
+                'C': 100,
+                'D': 500,
+                'M': 1000
+            };
+            let num = 0;
+            let prevValue = 0;
+            for (let i = roman.length - 1; i >= 0; i--) {
+                const currentValue = romanNumerals[roman[i]];
+                if (currentValue < prevValue) {
+                    num -= currentValue;
+                } else {
+                    num += currentValue;
+                }
+                prevValue = currentValue;
+            }
+            return num;
+        }
+    </script>
+</body>
+</html>
